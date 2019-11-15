@@ -1,6 +1,6 @@
 <template>
-    <div id="app" :style="getMargin()">
-        <Story :story="story" v-for="(story, index) in stories" :key="index" ref="stories" />
+    <div id="app" class="app" :style="getMargin()">
+        <Story :story="story" v-for="(story, index) in stories" :key="index" ref="stories"/>
     </div>
 </template>
 
@@ -93,10 +93,10 @@
         methods: {
             getMargin() {
                 if (window.innerWidth <= 768) {
-                    return {'margin-left': this.currentStoryIndex * -100 + 'vw'};
+                    return {'transform': `translateX(${this.currentStoryIndex * -100}vw)`};
                 }
 
-                return {'margin-top': this.currentStoryIndex * -100 + 'vh'};
+                return {'transform': `translateX(${this.currentStoryIndex * -100}vw)`};
             }
         }
     }
@@ -115,7 +115,7 @@
         background: #fafafa;
     }
 
-    #app {
+    .app {
         transition: margin .3s ease-out;
     }
 
@@ -124,8 +124,7 @@
             height: 100vh;
         }
 
-        #app {
-            width: 9999vw;
+        .app {
             position: relative;
         }
     }
