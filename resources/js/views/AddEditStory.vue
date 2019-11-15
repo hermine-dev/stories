@@ -1,24 +1,34 @@
 <template>
-    <div>
+    <div class="container">
         <form @submit.prevent="onSubmit($event)">
-            <div class="form-group">
+            <div class="form-group c-form">
                 <label for="page_name">Page Name:</label>
                 <input id="page_name" v-model="story.page_name"/>
             </div>
+            <div class="form-group text-center">
+              <button v-on:click="addFiles()" type="button" class="save-btn">Add Stories</button>
+            </div>
             <div class="form-group">
-                <label>Files
-                    <input type="file" id="files" ref="files" multiple v-on:change="handleFilesUpload"/>
+                <label>
+                    <input type="file" id="files" ref="files" multiple v-on:change="handleFilesUpload()"/>
                 </label>
             </div>
-            <div class="form-group">
-                <button type="button" v-on:click="addFiles()">+</button>
+            <div class="form-group d-flex justify-content-start flex-wrap">
+                <div v-for="(item, keyItem) in story.items" class="file-listing">
+                  <span class="remove-file" v-on:click="removeFileItem( keyItem )">
+                    <img src="/img/garbage.png" alt="">
+                  </span>
+                <img :src="`/storage/uploads/${item.story_id}/${item.path_name}`" class="circle-img" alt="">
+                </div>
+                <div v-for="(file, key) in files" class="file-listing">
+                  <span class="remove-file" v-on:click="removeFile( key )">
+                    <img src="/img/garbage.png" alt="">
+                  </span>
+                  {{ file }}
+                </div>
             </div>
-            <div class="form-group">
-                <div v-for="(item, keyItem) in story.items" class="file-listing"><span class="remove-file" v-on:click="removeFileItem( keyItem )">x</span>    {{ item.original_name }}</div>
-                <div v-for="(file, key) in files" class="file-listing"><span class="remove-file" v-on:click="removeFile( key )">x</span>    {{ file.name }}</div>
-            </div>
-            <div class="form-group">
-                <button type="submit">Save</button>
+            <div class="form-group text-center">
+                <button type="submit" class="save-btn">Save</button>
             </div>
         </form>
     </div>
@@ -74,7 +84,7 @@
             */
             handleFilesUpload(){
                 let uploadedFiles = this.$refs.files.files;
-
+              
                 /*
                   Adds the uploaded file to the files array
                 */

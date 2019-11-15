@@ -1,32 +1,31 @@
 <template>
     <div class="story">
+      <div class="content-wrapper">
         <div class="timeline">
             <div class="slice" v-for="(slide, i) in slides" :key="i">
                 <div class="progress">&nbsp;</div>
             </div>
         </div>
         <div class="slide">
-            <div class="row">
-                <div class="col-md-3">
-                    <div width="80px">
-                        <img src="/img/avatar.png" alt="avatar" width="100%">
-                    </div>
-                    <div><strong>{{$props.story.page_name}}</strong>
-                        <router-link :to="{ name: 'stories.edit', params: {id: $props.story.id } }">Edit</router-link>
-                    </div>
-                    <div>8m ago</div>
+            <div class="avatar-wrapper">
+                <img src="/img/avatar.jpg" class="avatar" alt="avatar">
+                <div>
+                  <strong>{{$props.story.page_name}}</strong>
+                  <router-link :to="{ name: 'stories.edit', params: {id: $props.story.id } }">Edit</router-link>
+                  <span>8m ago</span>
                 </div>
-                <div class="col-md-9">
-                    <div v-if="slides[currentSlideIndex].type === 'image'" width="250">
-                        <img :src="`/storage/uploads/${$props.story.id}/${slides[currentSlideIndex].path_name}`"
-                             :alt="slides[currentSlideIndex].original_name" width="100%">
-                    </div>
-                    <div v-if="slides[currentSlideIndex].type === 'video'">
-                        <video src="" :id="`video-${$props.story.id}-${slides[currentSlideIndex].id}`" controls></video>
-                    </div>
+            </div>
+            <div class="story-content-wrapper">
+                <div v-if="slides[currentSlideIndex].type === 'image'" width="250">
+                    <img :src="`/storage/uploads/${$props.story.id}/${slides[currentSlideIndex].path_name}`"
+                         :alt="slides[currentSlideIndex].original_name" width="100%">
+                </div>
+                <div v-if="slides[currentSlideIndex].type === 'video'">
+                    <video src="" :id="`video-${$props.story.id}-${slides[currentSlideIndex].id}`" controls></video>
                 </div>
             </div>
         </div>
+      </div>
     </div>
 </template>
 
@@ -162,48 +161,108 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-    .story {
-        float: left;
-        position: relative;
-        height: 100vh;
-        width: 100vw;
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-    }
+<style scoped lang="scss">
+  .avatar {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+  }
 
-    .timeline {
-        display: flex;
-        flex-grow: 0;
-        width: 100%;
+  .avatar-wrapper {
+    position: absolute;
+    top: 35px;
+    left: 15px;
+    display: flex;
+    z-index: 99999;
+    strong {
+      color: #fff;
     }
-
-    .timeline > .slice {
-        background: rgba(0, 0, 0, 0.25);
-        height: 10px;
-        margin: 10px;
-        width: 100%;
+    span {
+      display: block;
+      font-size: 14px;
+      color: #fff;
+      opacity: 0.7;
     }
+  }
 
-    .timeline > .slice > .progress {
-        background: black;
-        height: 10px;
-        width: 0%;
+  .content-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: #000;
+  }
+
+  .story {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .timeline {
+    display: flex;
+    flex-grow: 0;
+    width: 100%;
+    position: absolute;
+    top: 15px;
+    padding: 0 15px;
+    z-index: 999;
+  }
+
+  .timeline > .slice {
+    background: rgba(255, 255, 255, 0.25);
+    height: 3px;
+    margin: 3px;
+    width: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .timeline > .slice > .progress {
+    background: #fff;
+    height: 3px;
+    width: 0;
+    border-radius: 0;
+  }
+
+  .slide {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      box-shadow: inset 0 90px 75px -56px black;
+      height: 100%;
     }
+  }
 
-    .slide {
-        /* Take the rest of the page */
-        flex-grow: 1;
+  .slide p {
+    font-size: 60px;
+    opacity: .5;
+  }
+  
+  .story-content-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+  }
 
-        /* Center align */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .slide p {
-        font-size: 60px;
-        opacity: .5;
-    }
+  .mockup {
+    position: absolute;
+    width: 590px;
+    margin: auto;
+    left: -5px;
+    right: 0;
+  }
 </style>

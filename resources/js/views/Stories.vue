@@ -86,10 +86,10 @@
         methods: {
             getMargin() {
                 if (window.innerWidth <= 768) {
-                    return {'margin-left': this.currentStoryIndex * -100 + 'vw'};
+                    return {'transform': `translateX(${this.currentStoryIndex * -100}vw)`};
                 }
 
-                return {'margin-top': this.currentStoryIndex * -100 + 'vh'};
+                return {'transform': `translateX(${this.currentStoryIndex * -100}vw)`};
             }
         },
         created() {
@@ -128,7 +128,6 @@
         }
 
         .app {
-            width: 9999vw;
             position: relative;
         }
     }
