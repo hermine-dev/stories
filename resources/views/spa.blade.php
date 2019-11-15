@@ -8,9 +8,10 @@
     <title>Story Demo</title>
 </head>
 <body>
-<div id="app" class="flex-center position-ref full-height">
-    <app></app>
-</div>
+<noscript>
+    <strong>We're sorry but vue-story doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+<div id="app"></div>
 
 <script src="{{ mix('js/app.js') }}"></script>
 </body>

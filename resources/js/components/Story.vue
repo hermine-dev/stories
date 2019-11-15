@@ -22,7 +22,15 @@
                              :alt="slides[currentSlideIndex].original_name" width="100%">
                     </div>
                     <div v-if="slides[currentSlideIndex].type === 'video'">
-                        <video src="" :id="`video-${$props.story.id}-${slides[currentSlideIndex].id}`" controls></video>
+                        <Media :kind="'video'" :isMuted="false"
+                            :src="`/storage/uploads/${$props.story.id}/${slides[currentSlideIndex].path_name}`"
+                            :autoplay="false"
+                            :controls="false"
+                            :loop="true"
+                            :ref="'video_player'"
+                            :style="{width: '500px'}"
+                        >
+                        </Media>
                     </div>
                 </div>
             </div>
@@ -33,43 +41,46 @@
 <script>
     import anime from 'animejs/lib/anime.min';
     import Hammer from 'hammerjs';
-    import {EventBus} from '../helpers/EventBus';
+    import { EventBus } from '../helpers/EventBus';
+    import Media from '@dongido/vue-viaudio'
 
-    const SLIDE_DURATION = 5000;
+    const SLIDE_DURATION = 6000;
 
     export default {
         name: 'Story',
+        components: {
+            Media
+        },
         props: {
             story: Object
         },
         data() {
             const timeline = anime.timeline({
-                autoplay: true,
-                loop: true,
+                autoplay: false,
                 duration: SLIDE_DURATION,
                 easing: 'linear'
             });
 
             return {
                 currentSlideIndex: 0,
-                isActive: false,
                 timeline: timeline,
-                slides: []
+                slides: [],
+                playing: true
             }
         },
         methods: {
-            activate: function () { // Start timer
+            activate() { // Start timer
                 this.resetSlide();
             },
-            deactivate: function () {
+            deactivate() {
                 this.timeline.pause();
             },
-            resetSlide: function () { // Jump to beginning of the slide
+            resetSlide() { // Jump to beginning of the slide
                 this.timeline.pause();
                 this.timeline.seek(this.currentSlideIndex * SLIDE_DURATION);
                 this.timeline.play();
             },
-            nextSlide: function () {
+            nextSlide() {
                 if (this.currentSlideIndex < this.slides.length - 1) {
                     this.currentSlideIndex++;
                     this.resetSlide();
@@ -77,7 +88,7 @@
                     this.nextStory();
                 }
             },
-            previousSlide: function () {
+            previousSlide() {
                 if (this.currentSlideIndex > 0) {
                     this.currentSlideIndex--;
                     this.resetSlide();
@@ -85,10 +96,10 @@
                     this.previousStory();
                 }
             },
-            nextStory: function () {
+            nextStory() {
                 EventBus.$emit('NEXT_STORY');
             },
-            previousStory: function () {
+            previousStory() {
                 EventBus.$emit('PREVIOUS_STORY');
             }
         },
@@ -96,23 +107,29 @@
             let $timeline = this.$el.getElementsByClassName('timeline')[0];
 
             // Add progress bars to the timeline animation group
-            this.slides.forEach((color, index) => {
+            this.slides.forEach((slide, index) => {
                 this.timeline.add({
                     targets: $timeline.getElementsByClassName('slice')[index].getElementsByClassName('progress'),
                     width: '100%',
                     changeBegin: () => {
-                        // Update the Vue component state when progress bar begins to play
+                        // Update the Vue componenet state when progress bar begins to play
                         this.currentSlideIndex = index;
-                        if (this.slides[index].type === 'video') {
-                            let video = document.getElementById(`video-${this.$props.story.id}-${this.slides[index].id}`);
-                            video.src = `/storage/uploads/${this.$props.story.id}/${this.slides[index].path_name}`;
-                            //video.play(); // todo need to check correct time to play
-                        }
+                        if (this.$refs.video_player) {
+                            this.$refs.video_player.pause();
+                            this.$refs.video_player.currentTime = 0;
 
+                            if (slide.type === 'video') {
+                                this.$refs.video_player.play();
+                            }
+                        }
                     },
                     complete: () => {
                         // Move to the next story when finished playing all slides
                         if (index === this.slides.length - 1) {
+                            if (this.$refs.video_player) {
+                                this.$refs.video_player.pause();
+                                this.$refs.video_player.timeupdate = 0;
+                            }
                             this.nextStory();
                         }
                     }
@@ -121,9 +138,9 @@
 
             this.hammer = new Hammer.Manager(this.$el, {
                 recognizers: [
-                    [Hammer.Pan, {direction: Hammer.DIRECTION_HORIZONTAL}],
+                    [Hammer.Pan, { direction: Hammer.DIRECTION_HORIZONTAL }],
                     [Hammer.Tap],
-                    [Hammer.Press, {time: 1, threshold: 1000000}]
+                    [Hammer.Press, { time: 1, threshold: 1000000 }]
                 ]
             });
 
@@ -180,7 +197,7 @@
     }
 
     .timeline > .slice {
-        background: rgba(0, 0, 0, 0.25);
+        background: rgba(0,0,0,0.25);
         height: 10px;
         margin: 10px;
         width: 100%;

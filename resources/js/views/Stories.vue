@@ -1,6 +1,6 @@
 <template>
-    <div class="app" :style="getMargin()">
-        <Story :story="story" v-for="(story, index) in stories" :key="index" ref="stories"/>
+    <div id="app" :style="getMargin()">
+        <Story :story="story" v-for="(story, index) in stories" :key="index" ref="stories" />
     </div>
 </template>
 
@@ -11,7 +11,7 @@
     import storiesApi from '../api/stories';
 
     export default {
-        name: 'app',
+        name: 'stories',
         components: {
             Story
         },
@@ -22,8 +22,15 @@
             };
         },
         mounted() {
+            storiesApi.all()
+                .then(res => {
+                    this.stories = res.data;
+                })
+                .catch(err => {
+                    console.log('all err!!', err);
+                });
             EventBus.$on('NEXT_STORY', () => {
-                if (this.currentStoryIndex < this.stories.length - 1 && this.$refs.stories && this.$refs.stories[this.currentStoryIndex] !== undefined) {
+                if (this.currentStoryIndex < this.stories.length - 1) {
                     this.$refs.stories[this.currentStoryIndex].deactivate();
                     this.currentStoryIndex++;
                     this.$refs.stories[this.currentStoryIndex].activate();
@@ -31,14 +38,12 @@
             });
 
             EventBus.$on('PREVIOUS_STORY', () => {
-                if (this.$refs.stories && this.$refs.stories[this.currentStoryIndex] !== undefined) {
-                    if (this.currentStoryIndex > 0) {
-                        this.$refs.stories[this.currentStoryIndex].deactivate();
-                        this.currentStoryIndex--;
-                        this.$refs.stories[this.currentStoryIndex].activate();
-                    } else {
-                        this.$refs.stories[this.currentStoryIndex].resetSlide();
-                    }
+                if (this.currentStoryIndex > 0) {
+                    this.$refs.stories[this.currentStoryIndex].deactivate();
+                    this.currentStoryIndex--;
+                    this.$refs.stories[this.currentStoryIndex].activate();
+                } else {
+                    this.$refs.stories[this.currentStoryIndex].resetSlide();
                 }
             });
 
@@ -50,11 +55,11 @@
             // Debounced previous and next
             const debouncedNext = debounce(() => {
                 EventBus.$emit('NEXT_STORY');
-            }, 200, {leading: true, trailing: false});
+            }, 200, { leading: true, trailing: false });
 
             const debouncedPrevious = debounce(() => {
                 EventBus.$emit('PREVIOUS_STORY');
-            }, 200, {leading: true, trailing: false});
+            }, 200, { leading: true, trailing: false });
 
             // Mouse wheel handling
             // https://codepen.io/kayue/full/qGZOrb
@@ -77,11 +82,13 @@
                 } else if (delta < 0) {
                     debouncedPrevious();
                 }
-            }, 30, {leading: true, trailing: false});
+            }, 30, { leading: true, trailing: false });
 
             this.$el.addEventListener('wheel', debouncedWheelCallback);
 
-            if(this.$refs.stories && this.$refs.stories.length > 0) this.$refs.stories[0].activate();
+            setTimeout(() => {
+                this.$refs.stories[0].activate();
+            }, 1000);
         },
         methods: {
             getMargin() {
@@ -91,16 +98,6 @@
 
                 return {'margin-top': this.currentStoryIndex * -100 + 'vh'};
             }
-        },
-        created() {
-            storiesApi.all()
-                .then(res => {
-                    this.stories = res.data;
-
-                })
-                .catch(err => {
-                    console.log('all err!!', err);
-                });
         }
     }
 </script>
@@ -118,7 +115,7 @@
         background: #fafafa;
     }
 
-    .app {
+    #app {
         transition: margin .3s ease-out;
     }
 
@@ -127,7 +124,7 @@
             height: 100vh;
         }
 
-        .app {
+        #app {
             width: 9999vw;
             position: relative;
         }
