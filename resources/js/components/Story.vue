@@ -11,7 +11,9 @@
                     <div width="80px">
                         <img src="/img/avatar.png" alt="avatar" width="100%">
                     </div>
-                    <div><strong>{{$props.story.page_name}}</strong></div>
+                    <div><strong>{{$props.story.page_name}}</strong>
+                        <router-link :to="{ name: 'stories.edit', params: {id: $props.story.id } }">Edit</router-link>
+                    </div>
                     <div>8m ago</div>
                 </div>
                 <div class="col-md-9">

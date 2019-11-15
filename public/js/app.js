@@ -1891,6 +1891,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -2067,6 +2069,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     onSubmit: function onSubmit(event) {
+      var _this = this;
+
       /*
         Initialize the form data
       */
@@ -2092,7 +2096,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
       _api_stories__WEBPACK_IMPORTED_MODULE_0__["default"].saveItems(formData).then(function (res) {
-        console.log('SUCCESS!!', res);
+        _this.$router.push('/'); // redirect to stories page
+
       })["catch"](function (err) {
         console.log('FAILURE!!', err);
       });
@@ -2118,25 +2123,23 @@ __webpack_require__.r(__webpack_exports__);
       this.files.splice(key, 1);
     },
     removeFileItem: function removeFileItem(key) {
-      var _this = this;
+      var _this2 = this;
 
       var item = this.story.items[key];
       _api_stories__WEBPACK_IMPORTED_MODULE_0__["default"].removeItem(item.id).then(function (res) {
-        console.log('remove Item', res);
-        if (res.data) _this.story.items.splice(key, 1);
+        if (res.data) _this2.story.items.splice(key, 1);
       })["catch"](function (err) {
         console.log('storiesApi', err);
       });
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this3 = this;
 
     if (this.$route.params.id !== undefined) {
       this.story.id = this.$route.params.id;
       _api_stories__WEBPACK_IMPORTED_MODULE_0__["default"].find(this.$route.params.id).then(function (res) {
-        console.log('storiesApi', res);
-        _this2.story = res.data;
+        _this3.story = res.data;
       })["catch"](function (err) {
         console.log('storiesApi', err);
       });
@@ -2211,7 +2214,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     _helpers_EventBus__WEBPACK_IMPORTED_MODULE_2__["EventBus"].$on('NEXT_STORY', function () {
-      if (_this.currentStoryIndex < _this.stories.length - 1 && _this.$refs.stories[_this.currentStoryIndex] !== undefined) {
+      if (_this.currentStoryIndex < _this.stories.length - 1 && _this.$refs.stories && _this.$refs.stories[_this.currentStoryIndex] !== undefined) {
         _this.$refs.stories[_this.currentStoryIndex].deactivate();
 
         _this.currentStoryIndex++;
@@ -2220,7 +2223,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     });
     _helpers_EventBus__WEBPACK_IMPORTED_MODULE_2__["EventBus"].$on('PREVIOUS_STORY', function () {
-      if (_this.$refs.stories[_this.currentStoryIndex] !== undefined) {
+      if (_this.$refs.stories && _this.$refs.stories[_this.currentStoryIndex] !== undefined) {
         if (_this.currentStoryIndex > 0) {
           _this.$refs.stories[_this.currentStoryIndex].deactivate();
 
@@ -2293,7 +2296,6 @@ __webpack_require__.r(__webpack_exports__);
     var _this2 = this;
 
     _api_stories__WEBPACK_IMPORTED_MODULE_3__["default"].all().then(function (res) {
-      console.log('all!!', res);
       _this2.stories = res.data;
     })["catch"](function (err) {
       console.log('all err!!', err);
@@ -41637,9 +41639,26 @@ var render = function() {
         _c("div", { staticClass: "col-md-3" }, [
           _vm._m(0),
           _vm._v(" "),
-          _c("div", [
-            _c("strong", [_vm._v(_vm._s(_vm.$props.story.page_name))])
-          ]),
+          _c(
+            "div",
+            [
+              _c("strong", [_vm._v(_vm._s(_vm.$props.story.page_name))]),
+              _vm._v(" "),
+              _c(
+                "router-link",
+                {
+                  attrs: {
+                    to: {
+                      name: "stories.edit",
+                      params: { id: _vm.$props.story.id }
+                    }
+                  }
+                },
+                [_vm._v("Edit")]
+              )
+            ],
+            1
+          ),
           _vm._v(" "),
           _c("div", [_vm._v("8m ago")])
         ]),

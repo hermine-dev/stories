@@ -23,7 +23,7 @@
         },
         mounted() {
             EventBus.$on('NEXT_STORY', () => {
-                if (this.currentStoryIndex < this.stories.length - 1 && this.$refs.stories[this.currentStoryIndex] !== undefined) {
+                if (this.currentStoryIndex < this.stories.length - 1 && this.$refs.stories && this.$refs.stories[this.currentStoryIndex] !== undefined) {
                     this.$refs.stories[this.currentStoryIndex].deactivate();
                     this.currentStoryIndex++;
                     this.$refs.stories[this.currentStoryIndex].activate();
@@ -31,7 +31,7 @@
             });
 
             EventBus.$on('PREVIOUS_STORY', () => {
-                if (this.$refs.stories[this.currentStoryIndex] !== undefined) {
+                if (this.$refs.stories && this.$refs.stories[this.currentStoryIndex] !== undefined) {
                     if (this.currentStoryIndex > 0) {
                         this.$refs.stories[this.currentStoryIndex].deactivate();
                         this.currentStoryIndex--;
@@ -95,7 +95,6 @@
         created() {
             storiesApi.all()
                 .then(res => {
-                    console.log('all!!', res);
                     this.stories = res.data;
 
                 })

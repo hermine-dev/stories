@@ -62,7 +62,7 @@
                 */
                 storiesApi.saveItems(formData)
                     .then(res => {
-                        console.log('SUCCESS!!', res);
+                        this.$router.push('/'); // redirect to stories page
                     })
                     .catch(err => {
                         console.log('FAILURE!!', err);
@@ -92,7 +92,6 @@
                 const item = this.story.items[key];
                 storiesApi.removeItem(item.id)
                     .then(res => {
-                        console.log('remove Item', res);
                         if(res.data) this.story.items.splice( key, 1 );
                     })
                     .catch(err => {
@@ -105,7 +104,6 @@
                 this.story.id = this.$route.params.id;
                 storiesApi.find(this.$route.params.id)
                                 .then(res => {
-                                    console.log('storiesApi', res);
                                     this.story = res.data;
                                 })
                                 .catch(err => {
