@@ -54,14 +54,14 @@ class StoriesController extends Controller
                     if (substr($mime_type, 0, 5) == 'image') { // checking is file image
                         $type = 'image';
                     } else if (in_array($mime_type, [
-                        'video/x-flv',
-                        'video/mp4',
-                        'application/x-mpegURL',
-                        'video/MP2T',
-                        'video/3gpp',
-                        'video/quicktime',
-                        'video/x-msvideo',
-                        'video/x-ms-wmv'
+                        'video/mp4', // todo only this format allowing for now
+//                        'video/x-flv',
+//                        'application/x-mpegURL',
+//                        'video/MP2T',
+//                        'video/3gpp',
+//                        'video/quicktime',
+//                        'video/x-msvideo',
+//                        'video/x-ms-wmv'
                     ])) { // checking is file video
                         $type = 'video';
                     } else { // invalid file type, the file can be image or video

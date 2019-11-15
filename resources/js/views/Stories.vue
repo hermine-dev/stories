@@ -31,19 +31,30 @@
                 });
             EventBus.$on('NEXT_STORY', () => {
                 if (this.currentStoryIndex < this.stories.length - 1) {
-                    this.$refs.stories[this.currentStoryIndex].deactivate();
+                    if (this.$refs.stories[this.currentStoryIndex]) {
+                        this.$refs.stories[this.currentStoryIndex].deactivate();
+                    }
                     this.currentStoryIndex++;
-                    this.$refs.stories[this.currentStoryIndex].activate();
+                    if (this.$refs.stories[this.currentStoryIndex]) {
+                        this.$refs.stories[this.currentStoryIndex].activate();
+                    }
+
                 }
             });
 
             EventBus.$on('PREVIOUS_STORY', () => {
                 if (this.currentStoryIndex > 0) {
-                    this.$refs.stories[this.currentStoryIndex].deactivate();
+                    if (this.$refs.stories[this.currentStoryIndex]) {
+                        this.$refs.stories[this.currentStoryIndex].deactivate();
+                    }
                     this.currentStoryIndex--;
-                    this.$refs.stories[this.currentStoryIndex].activate();
+                    if (this.$refs.stories[this.currentStoryIndex]) {
+                        this.$refs.stories[this.currentStoryIndex].activate();
+                    }
                 } else {
-                    this.$refs.stories[this.currentStoryIndex].resetSlide();
+                    if(this.$refs.stories[this.currentStoryIndex]){
+                        this.$refs.stories[this.currentStoryIndex].resetSlide();
+                    }
                 }
             });
 
